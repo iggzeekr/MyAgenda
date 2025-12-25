@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Agenda | Ezgi's Personal Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-calendar-check"></i>
+                <span>MyAgenda</span>
+            </div>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <span id="userInitial">E</span>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName">Ezgi Kara</h3>
+                    <p id="userTitle">Software Engineer</p>
+                </div>
+                <button class="edit-profile-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-view="today">
+                    <i class="fas fa-sun"></i>
+                    <span>Today</span>
+                    <span class="badge" id="todayCount">0</span>
+                </button>
+                <button class="nav-item" data-view="week">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>This Week</span>
+                </button>
+                <button class="nav-item" data-view="month">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </button>
+                <button class="nav-item" data-view="all">
+                    <i class="fas fa-list-ul"></i>
+                    <span>All Tasks</span>
+                </button>
+            </nav>
+
+            <div class="categories">
+                <h4>Categories</h4>
+                <div class="category-list">
+                    <button class="category-item active" data-category="all">
+                        <span class="dot" style="background: linear-gradient(135deg, #a855f7, #ec4899);"></span>
+                        All
+                    </button>
+                    <button class="category-item" data-category="work">
+                        <span class="dot" style="background: #3b82f6;"></span>
+                        Work
+                    </button>
+                    <button class="category-item" data-category="personal">
+                        <span class="dot" style="background: #10b981;"></span>
+                        Personal
+                    </button>
+                    <button class="category-item" data-category="study">
+                        <span class="dot" style="background: #f59e0b;"></span>
+                        Study
+                    </button>
+                    <button class="category-item" data-category="health">
+                        <span class="dot" style="background: #ef4444;"></span>
+                        Health
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-mini">
+                <div class="stat-item">
+                    <span class="stat-value" id="completedCount">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="pendingCount">0</span>
+                    <span class="stat-label">Pending</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="date-display">
+                        <h1 id="currentDate">December 25, 2025</h1>
+                        <p id="dayOfWeek">Thursday</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search tasks...">
+                    </div>
+                    <button class="add-task-btn" onclick="openModal()">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Task</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Today View -->
+                <div class="view-section active" id="todayView">
+                    <div class="view-header">
+                        <h2><i class="fas fa-sun"></i> Today's Schedule</h2>
+                        <div class="view-actions">
+                            <button class="filter-btn" onclick="sortTasks('time')">
+                                <i class="fas fa-clock"></i> By Time
+                            </button>
+                            <button class="filter-btn" onclick="sortTasks('priority')">
+                                <i class="fas fa-flag"></i> By Priority
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline" id="todayTimeline">
+                        <!-- Tasks will be rendered here -->
+                    </div>
+
+                    <div class="empty-state" id="emptyToday" style="display: none;">
+                        <i class="fas fa-coffee"></i>
+                        <h3>No tasks for today!</h3>
+                        <p>Enjoy your free time or add new tasks</p>
+                    </div>
+                </div>
+
+                <!-- Week View -->
+                <div class="view-section" id="weekView">
+                    <div class="view-header">
+                        <h2><i class="fas fa-calendar-week"></i> This Week</h2>
+                        <div class="week-nav">
+                            <button onclick="changeWeek(-1)"><i class="fas fa-chevron-left"></i></button>
+                            <span id="weekRange">Dec 23 - Dec 29</span>
+                            <button onclick="changeWeek(1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="week-grid" id="weekGrid">
+                        <!-- Week days will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Month View -->
+                <div class="view-section" id="monthView">
+                    <div class="view-header">
+                        <h2><i class="fas fa-calendar-alt"></i> Calendar</h2>
+                        <div class="month-nav">
+                            <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                            <span id="currentMonth">December 2025</span>
+                            <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <span>Sun</span>
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendar days will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Tasks View -->
+                <div class="view-section" id="allView">
+                    <div class="view-header">
+                        <h2><i class="fas fa-list-ul"></i> All Tasks</h2>
+                        <div class="view-actions">
+                            <select id="taskFilter" onchange="filterTasks()">
+                                <option value="all">All Tasks</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tasks-list" id="allTasksList">
+                        <!-- All tasks will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Task</h2>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="taskForm" onsubmit="saveTask(event)">
+                <input type="hidden" id="taskId">
+                
+                <div class="form-group">
+                    <label for="taskTitle">Task Title *</label>
+                    <input type="text" id="taskTitle" required placeholder="What needs to be done?">
+                </div>
+
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" rows="3" placeholder="Add details..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDate">Date *</label>
+                        <input type="date" id="taskDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskTime">Time</label>
+                        <input type="time" id="taskTime">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskCategory">Category</label>
+                        <select id="taskCategory">
+                            <option value="work">💼 Work</option>
+                            <option value="personal">👤 Personal</option>
+                            <option value="study">📚 Study</option>
+                            <option value="health">❤️ Health</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">🟢 Low</option>
+                            <option value="medium">🟡 Medium</option>
+                            <option value="high">🔴 High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Reminder</label>
+                    <div class="reminder-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="taskReminder">
+                            <span>Enable reminder</span>
+                        </label>
+                        <select id="reminderTime" disabled>
+                            <option value="5">5 minutes before</option>
+                            <option value="15">15 minutes before</option>
+                            <option value="30">30 minutes before</option>
+                            <option value="60">1 hour before</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Task
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" onclick="closeSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="settingsForm" onsubmit="saveSettings(event)">
+                <div class="form-group">
+                    <label for="settingsName">Your Name</label>
+                    <input type="text" id="settingsName" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="settingsTitle">Your Title</label>
+                    <input type="text" id="settingsTitle" placeholder="e.g., Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label>Theme</label>
+                    <div class="theme-options">
+                        <button type="button" class="theme-btn active" data-theme="purple" style="background: linear-gradient(135deg, #a855f7, #ec4899);"></button>
+                        <button type="button" class="theme-btn" data-theme="blue" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);"></button>
+                        <button type="button" class="theme-btn" data-theme="green" style="background: linear-gradient(135deg, #10b981, #84cc16);"></button>
+                        <button type="button" class="theme-btn" data-theme="orange" style="background: linear-gradient(135deg, #f59e0b, #ef4444);"></button>
+                        <button type="button" class="theme-btn" data-theme="dark" style="background: linear-gradient(135deg, #374151, #111827);"></button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-danger" onclick="clearAllData()">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Task saved successfully!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
