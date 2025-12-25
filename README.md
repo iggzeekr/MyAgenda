@@ -4,6 +4,8 @@ Today: Shows your daily tasks in a timeline format
 This Week: Weekly calendar view
 Calendar: Monthly calendar with marked event days
 All Tasks: Complete list of all your tasks
+
+
 ✅ Task Management
 ➕ Add new task with "Add Task" button
 📝 Title, description, date, time
@@ -11,6 +13,8 @@ All Tasks: Complete list of all your tasks
 🚦 Priority: Low (green), Medium (yellow), High (red)
 ⏰ Set reminders (5min, 15min, 30min, 1 hour before)
 ✓ Complete, edit, and delete tasks
+
+
 🔍 Filtering
 Filter by categories
 Search tasks with the search bar
